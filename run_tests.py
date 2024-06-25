@@ -45,9 +45,8 @@ class MyWidget(QtWidgets.QWidget):
     tmp_json = tempfile.NamedTemporaryFile(delete=False)
     try:
       # Call pytest on the test module
-      subprocess.run([sys.executable, "-m", "pytest", f"--{tmp_json.name}", self.test_module, "--test_values",
+      subprocess.run([sys.executable, "-m", "pytest", f"--json={tmp_json.name}", self.test_module, "--test_values",
                       *map(str,test_values)], capture_output=True)
-      import pdb; pdb.set_trace()
       d_results = json.load(open(tmp_json.name,'r'))
       self.results_label.setText("Tests complete!\n" + repr(d_results))
       self.layout.addWidget(self.results_label)
