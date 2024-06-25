@@ -25,11 +25,7 @@ def test_values_fail():
 
 @pytest.fixture
 def test_values_err():
-  return [0, 0.0, "0", "0.5"]
-
-@pytest.fixture
-def test_values():
-  return [0, 0.0, "0", "0.5"]
+  return [0, 0.0, math.nan]
 
 def _test_my_floor(_test_values):
   """Common implementation of tests.
