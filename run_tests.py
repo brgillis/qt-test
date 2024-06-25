@@ -10,7 +10,7 @@ Entry-point file to run the interface and unit tests
 import os
 import sys
 
-import pytest
+import subprocess
 from PySide6 import QtCore, QtWidgets
 
 class MyWidget(QtWidgets.QWidget):
@@ -36,7 +36,7 @@ class MyWidget(QtWidgets.QWidget):
     test_values = [0, 2, 4, 1.5, -1.5]
 
     # Call pytest on the test module
-    pytest.main([self.test_module, "--test_values", *map(str,test_values)])
+    subprocess.call([sys.executable, "-m", "pytest", self.test_module, "--test_values", *map(str,test_values)])
 
 if __name__ == "__main__":
 
@@ -48,7 +48,6 @@ if __name__ == "__main__":
   app = QtWidgets.QApplication([])
 
   widget = MyWidget(test_module=test_module)
-  widget.resize(800,600)
   widget.show()
 
   sys.exit(app.exec())
