@@ -30,10 +30,11 @@ class MyWidget(QtWidgets.QWidget):
     self.button = QtWidgets.QPushButton("Click me!")
     self.layout.addWidget(self.button)
 
-    self.results_visible = False
-    self.results_label = QtWidgets.QLabel("", alignment=QtCore.Qt.AlignLeft)
+    self.results_text = QtWidgets.QTextEdit("", alignment=QtCore.Qt.AlignLeft)
+    self.results_text.setReadOnly(True)
 
     self.button.clicked.connect(self.run_tests)
+
 
   @QtCore.Slot()
   def run_tests(self):
@@ -48,8 +49,9 @@ class MyWidget(QtWidgets.QWidget):
       subprocess.run([sys.executable, "-m", "pytest", f"--json={tmp_json.name}", self.test_module, "--test_values",
                       *map(str,test_values)], capture_output=True)
       d_results = json.load(open(tmp_json.name,'r'))
-      self.results_label.setText("Tests complete!\n" + repr(d_results))
-      self.layout.addWidget(self.results_label)
+      self.results_text.setText("Tests complete!\n" + repr(d_results))
+      self.layout.addWidget(self.results_text)
+      self.resize(800,600)
     finally:
         tmp_json.close()
 
