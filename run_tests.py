@@ -28,12 +28,12 @@ class MyWidget(QtWidgets.QWidget):
     self.layout.addWidget(self.text)
 
     self.button = QtWidgets.QPushButton("Click me!")
+    self.button.clicked.connect(self.run_tests)
     self.layout.addWidget(self.button)
 
     self.results_text = QtWidgets.QTextEdit("", alignment=QtCore.Qt.AlignLeft)
     self.results_text.setReadOnly(True)
 
-    self.button.clicked.connect(self.run_tests)
 
 
   @QtCore.Slot()
