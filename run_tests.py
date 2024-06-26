@@ -23,7 +23,7 @@ class MyWidget(QtWidgets.QWidget):
 
     self.layout: QtWidgets.QVBoxLayout = QtWidgets.QVBoxLayout(self)
 
-    self.input_layout = QtWidgets.QFormLayout(self)
+    self.input_layout = QtWidgets.QFormLayout()
     self.l_inputs = []
     for i in range(5):
       label_widget = QtWidgets.QLabel(f"Test value {i}:")
