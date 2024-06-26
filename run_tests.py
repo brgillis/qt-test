@@ -23,6 +23,18 @@ class MyWidget(QtWidgets.QWidget):
 
     self.layout: QtWidgets.QVBoxLayout = QtWidgets.QVBoxLayout(self)
 
+    self.input_layout = QtWidgets.QFormLayout(self)
+    self.l_inputs = []
+    for i in range(5):
+      label_widget = QtWidgets.QLabel(f"Test value {i}:")
+
+      text_edit_widget = QtWidgets.QLineEdit()
+      self.l_inputs.append(text_edit_widget)
+
+      self.input_layout.addRow(label_widget, text_edit_widget)
+
+    self.layout.addLayout(self.input_layout)
+
     self.text = QtWidgets.QLabel("Press the button to run the unit tests!",
                                  alignment=QtCore.Qt.AlignCenter)
     self.layout.addWidget(self.text)
@@ -39,8 +51,14 @@ class MyWidget(QtWidgets.QWidget):
   @QtCore.Slot()
   def run_tests(self):
 
-    # TODO - Replace the next bit with use of QT to make an interface to get values and call pytest with them
-    test_values = [0, 2, 4, 1.5, -1.5]
+    l_input = [None] * 5
+    for i in range(5):
+      l_input[i] = self.l_inputs[i].text()
+    l_input = [x for x in l_input if x!=""]
+    if len(l_input)==0:
+      test_values = [0, 2, 4, 1.5, -1.5]
+    else:
+      test_values = l_input
 
     # Create a temporary JSON file for output
     tmp_json = tempfile.NamedTemporaryFile(delete=False)
