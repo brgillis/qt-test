@@ -70,10 +70,13 @@ class MyWidget(QtWidgets.QWidget):
       d_results = json.load(open(tmp_json.name,'r'))
     finally:
         tmp_json.close()
+
     if len(d_results)==0:
       self.results_text.setText("Tests failed to run")
     else:
-      self.results_text.setText("Tests complete!\n" + repr(d_results))
+      self.results_text.setText("Tests complete!\n" + repr(d_results['report']))
+
+    import pdb; pdb.set_trace()
     self.layout.addWidget(self.results_text)
     self.resize(800,600)
 
