@@ -62,16 +62,20 @@ class MyWidget(QtWidgets.QWidget):
 
     # Create a temporary JSON file for output
     tmp_json = tempfile.NamedTemporaryFile(delete=False)
+    d_results = {}
     try:
       # Call pytest on the test module
       subprocess.run([sys.executable, "-m", "pytest", f"--json={tmp_json.name}", self.test_module, "--test_values",
                       *map(str,test_values)], capture_output=True)
       d_results = json.load(open(tmp_json.name,'r'))
-      self.results_text.setText("Tests complete!\n" + repr(d_results))
-      self.layout.addWidget(self.results_text)
-      self.resize(800,600)
     finally:
         tmp_json.close()
+    if len(d_results)==0:
+      self.results_text.setText("Tests failed to run")
+    else:
+      self.results_text.setText("Tests complete!\n" + repr(d_results))
+    self.layout.addWidget(self.results_text)
+    self.resize(800,600)
 
 if __name__ == "__main__":
 
