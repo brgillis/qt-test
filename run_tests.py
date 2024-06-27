@@ -57,6 +57,25 @@ class MyWidget(QtWidgets.QWidget):
   @QtCore.Slot()
   def run_tests(self):
 
+    # Clean up any prior results
+    while self.summary_layout.count():
+      child = self.summary_layout.takeAt(0)
+      child_widget = child.widget()
+      if child_widget is not None:
+          child_widget.deleteLater()
+    
+    while self.right_layout.count():
+      child = self.right_layout.takeAt(0)
+      child_widget = child.widget()
+      if child_widget is not None:
+          child_widget.deleteLater()
+      else:
+        while child.count():
+          child_child = child.takeAt(0)
+          child_child_widget = child_child.widget()
+          if child_child_widget is not None:
+              child_child_widget.deleteLater()
+
     l_input = [None] * 5
     for i in range(5):
       l_input[i] = self.l_inputs[i].text()
@@ -74,6 +93,8 @@ class MyWidget(QtWidgets.QWidget):
       subprocess.run([sys.executable, "-m", "pytest", f"--json={tmp_json.name}", self.test_module, "--test_values",
                       *map(str,test_values)], capture_output=True)
       d_results = json.load(open(tmp_json.name,'r'))
+    except Exception as e:
+      self.results_label.setText("Tests failed to run")
     finally:
         tmp_json.close()
 
@@ -87,32 +108,14 @@ class MyWidget(QtWidgets.QWidget):
       self.left_layout.addLayout(self.summary_layout)
       self.first_run = False
 
-    # Add a section to summarize test results (after cleaning up any existing one)
+    # Add a section to summarize test results
     d_summary = d_report['summary']
-    while self.summary_layout.count():
-      child = self.summary_layout.takeAt(0)
-      child_widget = child.widget()
-      if child_widget is not None:
-          child_widget.deleteLater()
     self.summary_layout.addRow(QtWidgets.QLabel('Tests passed:'),
                                QtWidgets.QLabel(f"{d_summary['passed']}/{d_summary['num_tests']}"))
     self.summary_layout.addRow(QtWidgets.QLabel('Tests failed:'),
                                QtWidgets.QLabel(f"{d_summary['failed']}/{d_summary['num_tests']}"))
     self.summary_layout.addRow(QtWidgets.QLabel('Tests skipped:'),
                                QtWidgets.QLabel(f"{d_summary['skipped']}/{d_summary['num_tests']}"))
-    
-    # Clean up results from any previous test runs
-    while self.right_layout.count():
-      child = self.right_layout.takeAt(0)
-      child_widget = child.widget()
-      if child_widget is not None:
-          child_widget.deleteLater()
-      else:
-        while child.count():
-          child_child = child.takeAt(0)
-          child_child_widget = child_child.widget()
-          if child_child_widget is not None:
-              child_child_widget.deleteLater()
 
     for d_test in d_report['tests']:
       test_layout = QtWidgets.QVBoxLayout()
