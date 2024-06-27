@@ -10,7 +10,7 @@ pytest test configuration.
 import pytest
 
 def pytest_addoption(parser):
-    parser.addoption("--test_values", nargs="+", default=[0, 1, 1.0, 1.5], type=float)
+    parser.addoption("--test_values", nargs="+", default=[0, 1, 1.0, 1.5], type=str)
 
 
 @pytest.fixture

@@ -30,7 +30,7 @@ def test_values_err():
 def _test_my_floor(_test_values):
   """Common implementation of tests.
   """
-  for x in _test_values:
+  for x in map(float,_test_values):
     assert my_floor(x)==math.floor(x), f"my_floor failed for input {x}"
 
 def test_my_floor_pass(test_values_pass):
