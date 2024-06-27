@@ -98,7 +98,19 @@ class MyWidget(QtWidgets.QWidget):
       test_layout = QtWidgets.QVBoxLayout()
       self.right_layout.addLayout(test_layout)
       test_layout.addWidget(QtWidgets.QLabel(d_test['name']))
-      test_layout.addWidget(QtWidgets.QLabel(f"result: {d_test['outcome'].upper()}"))
+
+      # Color the test result accordingly with its result
+      test_outcome = d_test['outcome']
+      outcome_color="black"
+      if test_outcome=="passed":
+        outcome_color="green"
+      elif test_outcome=="failed":
+        outcome_color="red"
+      elif test_outcome=="skipped":
+        outcome_color="blue" 
+
+      test_layout.addWidget(QtWidgets.QLabel(f"Result: <span style='font-weight:900; color:{outcome_color};'>"
+                                             f"{test_outcome.upper()}</span>"))
 
       # If a detailed report is present, add it in a QTextEdit
       d_call = d_test.get('call')
