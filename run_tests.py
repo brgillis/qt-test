@@ -21,7 +21,7 @@ class MyWidget(QtWidgets.QWidget):
 
     self.test_module = test_module
 
-    self.layout: QtWidgets.QHBoxLayout = QtWidgets.QVBoxLayout(self)
+    self.layout: QtWidgets.QHBoxLayout = QtWidgets.QHBoxLayout(self)
 
     self.left_layout = QtWidgets.QVBoxLayout()
     self.right_layout = QtWidgets.QVBoxLayout()
@@ -60,7 +60,7 @@ class MyWidget(QtWidgets.QWidget):
       l_input[i] = self.l_inputs[i].text()
     l_input = [x for x in l_input if x!=""]
     if len(l_input)==0:
-      test_values = [0, 2, 4, 1.5, -1.5]
+      test_values = [0, 2, 4, 1.5]
     else:
       test_values = l_input
 
@@ -87,12 +87,30 @@ class MyWidget(QtWidgets.QWidget):
     self.summary_layout.addRow(QtWidgets.QLabel('Tests passed:'),
                                QtWidgets.QLabel(f"{d_summary['passed']}/{d_summary['num_tests']}"))
     self.summary_layout.addRow(QtWidgets.QLabel('Tests failed:'),
-                               QtWidgets.QLabel(f"{d_summary['passed']}/{d_summary['num_tests']}"))
+                               QtWidgets.QLabel(f"{d_summary['failed']}/{d_summary['num_tests']}"))
     self.summary_layout.addRow(QtWidgets.QLabel('Tests skipped:'),
-                               QtWidgets.QLabel(f"{d_summary['passed']}/{d_summary['num_tests']}"))
+                               QtWidgets.QLabel(f"{d_summary['skipped']}/{d_summary['num_tests']}"))
     self.left_layout.addLayout(self.summary_layout)
     
-    import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
+
+    for d_test in d_report['tests']:
+      test_layout = QtWidgets.QVBoxLayout()
+      self.right_layout.addLayout(test_layout)
+      test_layout.addWidget(QtWidgets.QLabel(d_test['name']))
+      test_layout.addWidget(QtWidgets.QLabel(f"result: {d_test['outcome'].upper()}"))
+
+      # If a detailed report is present, add it in a QTextEdit
+      d_call = d_test.get('call')
+      if not d_call:
+        continue
+      test_report_str = d_call.get('longrepr')
+      if not test_report_str:
+        continue
+      test_report = QtWidgets.QTextEdit(test_report_str)
+      test_report.setReadOnly(True)
+      test_layout.addWidget(test_report)
+
 
     
     self.resize(800,600)
