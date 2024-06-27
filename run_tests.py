@@ -52,6 +52,8 @@ class MyWidget(QtWidgets.QWidget):
 
     self.summary_layout = QtWidgets.QFormLayout()
 
+    self.first_run = True
+
   @QtCore.Slot()
   def run_tests(self):
 
@@ -80,19 +82,37 @@ class MyWidget(QtWidgets.QWidget):
       return
     d_report = d_results['report']
     self.results_label.setText("Tests complete!")
-    self.left_layout.addWidget(self.results_label)
+    if self.first_run:
+      self.left_layout.addWidget(self.results_label)
+      self.left_layout.addLayout(self.summary_layout)
+      self.first_run = False
 
-    # Add a section to summarize test results
+    # Add a section to summarize test results (after cleaning up any existing one)
     d_summary = d_report['summary']
+    while self.summary_layout.count():
+      child = self.summary_layout.takeAt(0)
+      child_widget = child.widget()
+      if child_widget is not None:
+          child_widget.deleteLater()
     self.summary_layout.addRow(QtWidgets.QLabel('Tests passed:'),
                                QtWidgets.QLabel(f"{d_summary['passed']}/{d_summary['num_tests']}"))
     self.summary_layout.addRow(QtWidgets.QLabel('Tests failed:'),
                                QtWidgets.QLabel(f"{d_summary['failed']}/{d_summary['num_tests']}"))
     self.summary_layout.addRow(QtWidgets.QLabel('Tests skipped:'),
                                QtWidgets.QLabel(f"{d_summary['skipped']}/{d_summary['num_tests']}"))
-    self.left_layout.addLayout(self.summary_layout)
     
-    # import pdb; pdb.set_trace()
+    # Clean up results from any previous test runs
+    while self.right_layout.count():
+      child = self.right_layout.takeAt(0)
+      child_widget = child.widget()
+      if child_widget is not None:
+          child_widget.deleteLater()
+      else:
+        while child.count():
+          child_child = child.takeAt(0)
+          child_child_widget = child_child.widget()
+          if child_child_widget is not None:
+              child_child_widget.deleteLater()
 
     for d_test in d_report['tests']:
       test_layout = QtWidgets.QVBoxLayout()
