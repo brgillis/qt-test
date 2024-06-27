@@ -21,7 +21,13 @@ class MyWidget(QtWidgets.QWidget):
 
     self.test_module = test_module
 
-    self.layout: QtWidgets.QVBoxLayout = QtWidgets.QVBoxLayout(self)
+    self.layout: QtWidgets.QHBoxLayout = QtWidgets.QVBoxLayout(self)
+
+    self.left_layout = QtWidgets.QVBoxLayout()
+    self.right_layout = QtWidgets.QVBoxLayout()
+
+    self.layout.addLayout(self.left_layout)
+    self.layout.addLayout(self.right_layout)
 
     self.input_layout = QtWidgets.QFormLayout()
     self.l_inputs = []
@@ -33,20 +39,18 @@ class MyWidget(QtWidgets.QWidget):
 
       self.input_layout.addRow(label_widget, text_edit_widget)
 
-    self.layout.addLayout(self.input_layout)
+    self.left_layout.addLayout(self.input_layout)
 
-    self.text = QtWidgets.QLabel("Press the button to run the unit tests!",
-                                 alignment=QtCore.Qt.AlignCenter)
-    self.layout.addWidget(self.text)
+    self.text = QtWidgets.QLabel("Press the button to run the unit tests!")
+    self.left_layout.addWidget(self.text)
 
     self.button = QtWidgets.QPushButton("Click me!")
     self.button.clicked.connect(self.run_tests)
-    self.layout.addWidget(self.button)
+    self.left_layout.addWidget(self.button)
 
-    self.results_text = QtWidgets.QTextEdit("", alignment=QtCore.Qt.AlignLeft)
-    self.results_text.setReadOnly(True)
+    self.results_label = QtWidgets.QLabel("")
 
-
+    self.summary_layout = QtWidgets.QFormLayout()
 
   @QtCore.Slot()
   def run_tests(self):
@@ -72,13 +76,27 @@ class MyWidget(QtWidgets.QWidget):
         tmp_json.close()
 
     if len(d_results)==0:
-      self.results_text.setText("Tests failed to run")
-    else:
-      self.results_text.setText("Tests complete!\n" + repr(d_results['report']))
+      self.results_label.setText("Tests failed to run")
+      return
+    d_report = d_results['report']
+    self.results_label.setText("Tests complete!")
+    self.left_layout.addWidget(self.results_label)
 
+    # Add a section to summarize test results
+    d_summary = d_report['summary']
+    self.summary_layout.addRow(QtWidgets.QLabel('Tests passed:'),
+                               QtWidgets.QLabel(f"{d_summary['passed']}/{d_summary['num_tests']}"))
+    self.summary_layout.addRow(QtWidgets.QLabel('Tests failed:'),
+                               QtWidgets.QLabel(f"{d_summary['passed']}/{d_summary['num_tests']}"))
+    self.summary_layout.addRow(QtWidgets.QLabel('Tests skipped:'),
+                               QtWidgets.QLabel(f"{d_summary['passed']}/{d_summary['num_tests']}"))
+    self.left_layout.addLayout(self.summary_layout)
+    
     import pdb; pdb.set_trace()
-    self.layout.addWidget(self.results_text)
+
+    
     self.resize(800,600)
+
 
 if __name__ == "__main__":
 
