@@ -4,7 +4,8 @@
 :date: 2024/06/25
 :author: Bryan Gillis
 
-Entry-point file to run the interface and unit tests
+Executable python script which displays a widget to allow running of unit tests (optionally with custom values to test
+a function on) and display results.
 """
 
 import json
