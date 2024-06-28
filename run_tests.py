@@ -9,10 +9,10 @@ Entry-point file to run the interface and unit tests
 
 import json
 import os
+import subprocess
 import sys
 import tempfile
 
-import subprocess
 from PySide6 import QtCore, QtWidgets
 
 class MyWidget(QtWidgets.QWidget):

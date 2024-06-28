@@ -8,6 +8,7 @@ Mock unit tests of functions which fail on certain values.
 """
 
 import math
+
 import pytest
 
 def my_floor(x):
