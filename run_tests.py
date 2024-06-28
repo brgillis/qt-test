@@ -16,7 +16,7 @@ import tempfile
 
 from PySide6 import QtCore, QtWidgets
 
-class MyWidget(QtWidgets.QWidget):
+class TestRunnerWidget(QtWidgets.QWidget):
   def __init__(self, test_module):
     super().__init__()
 
@@ -161,7 +161,7 @@ if __name__ == "__main__":
 
   app = QtWidgets.QApplication([])
 
-  widget = MyWidget(test_module=test_module)
+  widget = TestRunnerWidget(test_module=test_module)
   widget.show()
 
   sys.exit(app.exec())
