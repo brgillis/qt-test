@@ -14,11 +14,4 @@ def pytest_addoption(parser):
   user to specify a list of values which will be used for one of the unit tests.
   """
   parser.addoption("--test_values", nargs="+", default=[0, 1, 1.0, 1.5], type=str)
-
-
-@pytest.fixture
-def test_values(request):
-  """Fixture providing a set of values which can be specified at the invocation of pytest, default to a set which will
-  all pass.
-  """
-  return request.config.getoption("--test_values")
+  

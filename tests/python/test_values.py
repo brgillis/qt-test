@@ -35,6 +35,13 @@ def test_values_err():
   """
   return [0, 0.0, math.nan]
 
+@pytest.fixture
+def test_values(request):
+  """Fixture providing a set of values which can be specified at the invocation of pytest, default to a set which will
+  all pass.
+  """
+  return request.config.getoption("--test_values")
+
 def _test_my_floor(_test_values):
   """Common implementation of all different unit tests. The mock function is run on each value, and the result is
   compared with the results of the built-in `math.floor` function.
