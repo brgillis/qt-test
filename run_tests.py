@@ -19,6 +19,8 @@ from PySide6 import QtCore, QtWidgets
 DEFAULT_NUM_USER_VALUES = 5
 
 class TestRunnerWidget(QtWidgets.QWidget):
+    """A Qt-based which which when shown will provide an interface to run unit tests and display the results.
+    """
     def __init__(self, test_module, num_user_values = DEFAULT_NUM_USER_VALUES):
         super().__init__()
 
@@ -58,8 +60,11 @@ class TestRunnerWidget(QtWidgets.QWidget):
 
         self.first_run = True
 
-    @QtCore.Slot()
-    def run_tests(self):
+    def cleanup(self):
+        """Clean up any previous test results from the widget. Note that this isn't a full implementation which can
+        clean up arbitrary layouts and widgets, which would necessarily be recursive. This goes only to the depth
+        necessary to clean up what exists in this widget.
+        """
 
         # Clean up any prior results
         while self.summary_layout.count():
@@ -67,7 +72,7 @@ class TestRunnerWidget(QtWidgets.QWidget):
             child_widget = child.widget()
             if child_widget is not None:
                 child_widget.deleteLater()
-        
+
         while self.right_layout.count():
             child = self.right_layout.takeAt(0)
             child_widget = child.widget()
@@ -79,6 +84,14 @@ class TestRunnerWidget(QtWidgets.QWidget):
                     child_child_widget = child_child.widget()
                     if child_child_widget is not None:
                         child_child_widget.deleteLater()
+
+    @QtCore.Slot()
+    def run_tests(self):
+        """Method called when the widget's button is pressed, which cleans up any previous test results, runs the tests,
+        and displays the results.
+        """
+
+        self.cleanup()
 
         # Get any user values supplied. Any empty boxes are removed from the list
         # We don't use self.num_user_values here just in case self.l_inputs has changed (due to future code changes)
@@ -155,8 +168,6 @@ class TestRunnerWidget(QtWidgets.QWidget):
             test_report.setReadOnly(True)
             test_layout.addWidget(test_report)
 
-
-      
         self.resize(800,600)
 
 
