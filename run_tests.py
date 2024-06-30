@@ -105,6 +105,12 @@ class TestRunnerWidget(QtWidgets.QWidget):
         if len(l_input_values)==0:
             l_input_values = [0, 2, 4, 1.5]
 
+        self.results_label.setText("Tests running...")
+        if self.first_run:
+            self.left_layout.addWidget(self.results_label)
+            self.left_layout.addLayout(self.summary_layout)
+            self.first_run = False
+
         # Create a temporary JSON file for output
         tmp_json = tempfile.NamedTemporaryFile(delete=False)
         d_results = {}
@@ -123,10 +129,6 @@ class TestRunnerWidget(QtWidgets.QWidget):
             return
         d_report = d_results['report']
         self.results_label.setText("Tests complete!")
-        if self.first_run:
-            self.left_layout.addWidget(self.results_label)
-            self.left_layout.addLayout(self.summary_layout)
-            self.first_run = False
 
         # Add a section to summarize test results
         d_summary = d_report['summary']
