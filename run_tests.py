@@ -123,6 +123,7 @@ class TestRunnerWidget(QtWidgets.QWidget):
             self.results_label.setText("Tests failed to run")
         finally:
             tmp_json.close()
+            os.unlink(tmp_json.name)
 
         if len(d_results)==0:
             self.results_label.setText("Tests failed to run")
