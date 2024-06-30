@@ -104,8 +104,6 @@ class TestRunnerWidget(QtWidgets.QWidget):
         # If the list is ultimately empty, use a default set which all passes
         if len(l_input_values)==0:
             l_input_values = [0, 2, 4, 1.5]
-        else:
-            l_input_values = l_input_values
 
         # Create a temporary JSON file for output
         tmp_json = tempfile.NamedTemporaryFile(delete=False)
