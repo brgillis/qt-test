@@ -47,7 +47,14 @@ class TestRunnerWidget(QtWidgets.QWidget):
 
         self.left_layout.addLayout(self.input_layout)
 
-        self.text = QtWidgets.QLabel("Press the button to run the unit tests!")
+        self.text = QtWidgets.QLabel("Press the button to run the unit tests!\n"
+                                     "\n"
+                                     "This tests a mock floor function implemented\n"
+                                     "as `my_floor(x)=int(x)`. Think about what\n"
+                                     "values this might fail for and test them.\n"
+                                     "\n"
+                                     "The fourth unit test will test any input\n"
+                                     "values provided.")
         self.left_layout.addWidget(self.text)
 
         self.button = QtWidgets.QPushButton("Click me!")
