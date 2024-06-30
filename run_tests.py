@@ -117,7 +117,7 @@ class TestRunnerWidget(QtWidgets.QWidget):
         try:
             # Call pytest on the test module
             subprocess.run([sys.executable, "-m", "pytest", f"--json={tmp_json.name}", self.test_module,
-                            "--test_values", *map(str,l_input_values)], capture_output=True, check=True)
+                            "--test_values", *map(str,l_input_values)], capture_output=True, check=False)
             d_results = json.load(open(tmp_json.name,'r'))
         except Exception:
             self.results_label.setText("Tests failed to run")
