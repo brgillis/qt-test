@@ -16,11 +16,14 @@ import tempfile
 
 from PySide6 import QtCore, QtWidgets
 
+DEFAULT_NUM_USER_VALUES = 5
+
 class TestRunnerWidget(QtWidgets.QWidget):
-    def __init__(self, test_module):
+    def __init__(self, test_module, num_user_values = DEFAULT_NUM_USER_VALUES):
         super().__init__()
 
         self.test_module = test_module
+        self.num_user_values = num_user_values
 
         self.layout: QtWidgets.QHBoxLayout = QtWidgets.QHBoxLayout(self)
 
@@ -32,7 +35,7 @@ class TestRunnerWidget(QtWidgets.QWidget):
 
         self.input_layout = QtWidgets.QFormLayout()
         self.l_inputs = []
-        for i in range(5):
+        for i in range(self.num_user_values):
             label_widget = QtWidgets.QLabel(f"Test value {i}:")
 
             text_edit_widget = QtWidgets.QLineEdit()
@@ -77,14 +80,19 @@ class TestRunnerWidget(QtWidgets.QWidget):
                     if child_child_widget is not None:
                         child_child_widget.deleteLater()
 
-        l_input = [None] * 5
-        for i in range(5):
-            l_input[i] = self.l_inputs[i].text()
-        l_input = [x for x in l_input if x!=""]
-        if len(l_input)==0:
-            test_values = [0, 2, 4, 1.5]
+        # Get any user values supplied. Any empty boxes are removed from the list
+        # We don't use self.num_user_values here just in case self.l_inputs has changed (due to future code changes)
+        num_user_values = len(self.l_inputs)
+        l_input_values = [None] * num_user_values
+        for i in range(num_user_values):
+            l_input_values[i] = self.l_inputs[i].text()
+        l_input_values = [x for x in l_input_values if x!=""]
+
+        # If the list is ultimately empty, use a default set which all passes
+        if len(l_input_values)==0:
+            l_input_values = [0, 2, 4, 1.5]
         else:
-            test_values = l_input
+            l_input_values = l_input_values
 
         # Create a temporary JSON file for output
         tmp_json = tempfile.NamedTemporaryFile(delete=False)
@@ -92,7 +100,7 @@ class TestRunnerWidget(QtWidgets.QWidget):
         try:
             # Call pytest on the test module
             subprocess.run([sys.executable, "-m", "pytest", f"--json={tmp_json.name}", self.test_module,
-                            "--test_values", *map(str,test_values)], capture_output=True, check=True)
+                            "--test_values", *map(str,l_input_values)], capture_output=True, check=True)
             d_results = json.load(open(tmp_json.name,'r'))
         except Exception:
             self.results_label.setText("Tests failed to run")
